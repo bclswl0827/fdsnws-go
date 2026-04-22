@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FDSN DataSelect Service</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f3f6fb; color: #1f2937; }
+    main { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    .card { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+    h1, h2 { color: #0f172a; }
+    code, pre { background: #eef2ff; padding: 0.2rem 0.45rem; border-radius: 6px; }
+    pre { display: block; padding: 1rem; overflow-x: auto; }
+    a { color: #2563eb; }
+    .meta { color: #64748b; margin-bottom: 1.2rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h1>FDSN DataSelect Service</h1>
+      <p class="meta">Example web page for the DataSelect endpoint in the fdsnws-go sample provider.</p>
+      <p>This page demonstrates a simple English landing page for the FDSN DataSelect service. The example provider can serve MiniSEED-style data for a sample network and station.</p>
+      <h2>Example request</h2>
+      <pre>/fdsnws/dataselect/1/query?net=XX&amp;sta=DEMO&amp;loc=00&amp;cha=BHZ&amp;start=2020-01-01T00:00:00&amp;end=2020-01-01T00:00:10</pre>
+      <p>Use this endpoint to request waveform data for a short time window and inspect the response format.</p>
+      <p><a href="/fdsnws/dataselect/1/">Open the version 1 page</a></p>
+    </div>
+  </main>
+</body>
+</html>

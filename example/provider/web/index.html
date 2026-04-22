@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FDSN Web Service Example</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f3f6fb; color: #0f172a; }
+    main { max-width: 960px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    .card { background: white; border-radius: 14px; padding: 2rem; box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08); }
+    h1, h2 { color: #111827; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul { line-height: 1.7; }
+    code { background: #e2e8f0; padding: 0.2rem 0.45rem; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h1>FDSN Web Service Example</h1>
+      <p>This is the landing page for the sample FDSN web service built with fdsnws-go.</p>
+      <p>The example provider includes simple English templates for the main FDSN services.</p>
+      <h2>Available services</h2>
+      <ul>
+        <li><a href="/fdsnws/dataselect/">DataSelect</a></li>
+        <li><a href="/fdsnws/event/">Event</a></li>
+        <li><a href="/fdsnws/station/">Station</a></li>
+      </ul>
+      <p>You can use these pages to explore the example responses and test the routing in your preferred web framework.</p>
+    </div>
+  </main>
+</body>
+</html>

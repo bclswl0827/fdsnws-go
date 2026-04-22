@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FDSN DataSelect v1</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f3f6fb; color: #111827; }
+    main { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+    .card { background: #ffffff; border-radius: 12px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+    h1, h2 { color: #0f172a; }
+    code, pre { background: #e2e8f0; padding: 0.2rem 0.45rem; border-radius: 6px; }
+    pre { display: block; padding: 1rem; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h1>DataSelect Version 1</h1>
+      <p>This page represents the versioned FDSN DataSelect endpoint for the example provider.</p>
+      <h2>Service notes</h2>
+      <ul>
+        <li>Requests are made through the <code>/fdsnws/dataselect/1/query</code> path.</li>
+        <li>Use <code>net</code>, <code>sta</code>, <code>loc</code>, <code>cha</code>, <code>start</code>, and <code>end</code> parameters.</li>
+        <li>The sample data uses a simple synthetic waveform for demonstration.</li>
+      </ul>
+      <pre>Example: /fdsnws/dataselect/1/query?net=XX&amp;sta=DEMO&amp;cha=BHZ&amp;start=2020-01-01T00:00:00&amp;end=2020-01-01T00:00:10</pre>
+    </div>
+  </main>
+</body>
+</html>
