@@ -68,7 +68,7 @@ func encodeResult(outcome component.Outcome, value any) (Response, error) {
 			if marshaler, ok := value.(encoding.TextMarshaler); ok {
 				response.Body, err = marshaler.MarshalText()
 			} else {
-				response.Body = []byte(fmt.Sprint(value))
+				response.Body = fmt.Append(nil, value)
 			}
 		} else if strings.HasPrefix(response.MIMEType, "application/xml") {
 			response.Body, err = marshalXMLValue(outcome.XMLRoot, value)

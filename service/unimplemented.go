@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/bclswl0827/fdsnws-go/quakeml"
-	"github.com/bclswl0827/fdsnws-go/stationxml"
+	"github.com/bclswl0827/obsgo/inventory/stationxml"
 )
 
 type UnimplementedProvider struct{}

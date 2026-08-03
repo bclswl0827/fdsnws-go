@@ -14,8 +14,8 @@ import (
 	quakemlformat "github.com/bclswl0827/fdsnws-go/quakeml"
 	component "github.com/bclswl0827/fdsnws-go/service"
 	stationcomponent "github.com/bclswl0827/fdsnws-go/service/station"
-	stationxmlformat "github.com/bclswl0827/fdsnws-go/stationxml"
 	"github.com/bclswl0827/mseedio"
+	stationxmlformat "github.com/bclswl0827/obsgo/inventory/stationxml"
 )
 
 type testProvider struct {

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/bclswl0827/fdsnws-go/service"
-	"github.com/bclswl0827/fdsnws-go/stationxml"
+	"github.com/bclswl0827/obsgo/inventory/stationxml"
 )
 
 func encode(query service.StationQuery, document *stationxml.Document, currentTime time.Time) ([]byte, error) {
@@ -40,7 +40,7 @@ func encodeText(level string, document *stationxml.Document) []byte {
 					}
 					if channel.Response != nil && channel.Response.Sensitivity != nil {
 						sensitivity := channel.Response.Sensitivity
-						scale, frequency, units = number(sensitivity.Value), number(sensitivity.Frequency), sensitivity.Input.Name
+						scale, frequency, units = number(sensitivity.Value), number(float64(sensitivity.Frequency)), sensitivity.Input.Name
 					}
 					writeFields(&buffer, network.Code, station.Code, channel.LocationCode, channel.Code, number(channel.Latitude), number(channel.Longitude), number(channel.Elevation), number(channel.Depth), number(channel.Azimuth), number(channel.Dip), description, scale, frequency, units, number(channel.SampleRate), channel.StartDate, channel.EndDate)
 				}

@@ -4,7 +4,7 @@ import (
 	"time"
 
 	fdsnws "github.com/bclswl0827/fdsnws-go"
-	"github.com/bclswl0827/fdsnws-go/stationxml"
+	"github.com/bclswl0827/obsgo/inventory/stationxml"
 )
 
 func (provider Provider) Station(query fdsnws.StationQuery) (*stationxml.Document, fdsnws.ProviderErrorKind, error) {
