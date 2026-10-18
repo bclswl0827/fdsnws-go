@@ -18,8 +18,8 @@ github.com/aymerick/douceur v0.2.0 h1:Mv+mAeH1Q+n9Fr+oyamOlAkUNPWPlA8PPGR0QAaYuP
 github.com/aymerick/douceur v0.2.0/go.mod h1:wlT5vV2O3h55X9m7iVYN0TBM0NH/MmbLnd30/FjWUq4=
 github.com/bclswl0827/mseedio v1.2.2 h1:beFcOfFmKQvwwRrzBnZQsYvQUmqfg4wM9oBYzls1LzY=
 github.com/bclswl0827/mseedio v1.2.2/go.mod h1:G9nOPR8epxb7ihX5pUpvs3HqYZMnMlXc1Ha1WSMWn7s=
-github.com/bclswl0827/obsgo v1.0.0 h1:m4c45nKz1lS4dVOo+vBLY3AlAPm40LIOmkKHM6gjHYQ=
-github.com/bclswl0827/obsgo v1.0.0/go.mod h1:yQoQgDKYxe12seGRPxasey40Hb2RpeQrZO7sWw1AKK4=
+github.com/bclswl0827/obsgo v1.0.1 h1:XM8AW4EC9O/Ppq+TSAo8t+OQg/D4vvue+d2biBG2Hkk=
+github.com/bclswl0827/obsgo v1.0.1/go.mod h1:zDtmmUIsl9xd7kR3xDv4bVKxPPcIK+TaGPbH4q5DY7w=
 github.com/bytedance/gopkg v0.1.3 h1:TPBSwH8RsouGCBcMBktLt1AymVo2TVsBVCY4b6TnZ/M=
 github.com/bytedance/gopkg v0.1.3/go.mod h1:576VvJ+eJgyCzdjS+c4+77QF3p7ubbtiKARP3TxducM=
 github.com/bytedance/sonic v1.15.0 h1:/PXeWFaR5ElNcVE84U0dOHjiMHQOwNIx3K4ymzh/uSE=
