@@ -52,7 +52,7 @@ func WriteHTTPResponse(writer http.ResponseWriter, response Response) error {
 func (f *FDSNWS) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	normalized, err := RequestFromHTTP(request)
 	if err != nil {
-		response := f.errorResponse(Request{Path: request.URL.Path, URL: request.URL.String()}, "", http.StatusBadRequest, "Bad request", err.Error())
+		response := f.ErrorResponse(Request{Path: request.URL.Path, URL: request.URL.String()}, "", http.StatusBadRequest, "Bad request", err.Error())
 		_ = WriteHTTPResponse(writer, response)
 		return
 	}

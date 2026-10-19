@@ -32,14 +32,14 @@ func (f *FDSNWS) Handle(ctx context.Context, request Request) Response {
 	}
 	request.ReceivedAt = f.timeProvider.Now().UTC()
 	if len(request.URL) > 2000 || len(request.Path)+len(request.RawQuery)+1 > 2000 {
-		return f.errorResponse(request, "", http.StatusRequestURITooLong, "Request URI too large", "Request URI exceeds 2000 bytes")
+		return f.ErrorResponse(request, "", http.StatusRequestURITooLong, "Request URI too large", "Request URI exceeds 2000 bytes")
 	}
 	if strings.TrimSuffix(request.Path, "/") == f.config.basePath {
 		if !strings.EqualFold(request.Method, http.MethodGet) {
-			return f.errorResponse(request, "", http.StatusMethodNotAllowed, "Method not allowed", "This endpoint accepts GET")
+			return f.ErrorResponse(request, "", http.StatusMethodNotAllowed, "Method not allowed", "This endpoint accepts GET")
 		}
 		if isNil(f.rootProvider) {
-			return f.errorResponse(request, "", http.StatusNotFound, "Not found", "No FDSNWS root Provider is registered")
+			return f.ErrorResponse(request, "", http.StatusNotFound, "Not found", "No FDSNWS root Provider is registered")
 		}
 		if err := ctx.Err(); err != nil {
 			return f.finishOutcome(request, "", component.Outcome{}, err)
@@ -51,12 +51,12 @@ func (f *FDSNWS) Handle(ctx context.Context, request Request) Response {
 	}
 	service, endpoint, kind, ok := f.route(request.Path)
 	if !ok {
-		return f.errorResponse(request, "", http.StatusNotFound, "Not found", "Unknown or disabled FDSN web service endpoint")
+		return f.ErrorResponse(request, "", http.StatusNotFound, "Not found", "Unknown or disabled FDSN web service endpoint")
 	}
 	module := service.Name()
 	if kind == routeServiceRoot || kind == routeVersionRoot {
 		if !strings.EqualFold(request.Method, http.MethodGet) {
-			return f.errorResponse(request, module, http.StatusMethodNotAllowed, "Method not allowed", "This endpoint accepts GET")
+			return f.ErrorResponse(request, module, http.StatusMethodNotAllowed, "Method not allowed", "This endpoint accepts GET")
 		}
 		if err := ctx.Err(); err != nil {
 			return f.finishOutcome(request, module, component.Outcome{}, err)
@@ -66,7 +66,7 @@ func (f *FDSNWS) Handle(ctx context.Context, request Request) Response {
 	}
 	if endpoint == "version" || endpoint == "application.wadl" {
 		if !strings.EqualFold(request.Method, http.MethodGet) {
-			return f.errorResponse(request, module, http.StatusMethodNotAllowed, "Method not allowed", "This endpoint accepts GET")
+			return f.ErrorResponse(request, module, http.StatusMethodNotAllowed, "Method not allowed", "This endpoint accepts GET")
 		}
 		if endpoint == "version" {
 			return Response{StatusCode: http.StatusOK, MIMEType: MIMEText, Body: []byte(f.serviceVersion(module) + "\n")}
@@ -85,7 +85,7 @@ func (f *FDSNWS) finishOutcome(request Request, module Module, outcome component
 	if err != nil {
 		var requestErr *component.RequestError
 		if errors.As(err, &requestErr) {
-			response := f.errorResponse(request, module, requestErr.Status, requestErr.Summary, requestErr.Detail)
+			response := f.ErrorResponse(request, module, requestErr.Status, requestErr.Summary, requestErr.Detail)
 			response.Headers = cloneResponseHeaders(requestErr.Headers)
 			return response
 		}
@@ -93,25 +93,25 @@ func (f *FDSNWS) finishOutcome(request Request, module Module, outcome component
 			return f.noDataResponse(request, module, outcome.NoData)
 		}
 		if errors.Is(err, ErrNotImplemented) {
-			return f.errorResponse(request, module, http.StatusNotImplemented, "Not implemented", err.Error())
+			return f.ErrorResponse(request, module, http.StatusNotImplemented, "Not implemented", err.Error())
 		}
 		var httpErr *HTTPError
 		if errors.As(err, &httpErr) && httpErr.Status >= 400 && httpErr.Status <= 599 {
-			response := f.errorResponse(request, module, httpErr.Status, http.StatusText(httpErr.Status), httpErr.Error())
+			response := f.ErrorResponse(request, module, httpErr.Status, http.StatusText(httpErr.Status), httpErr.Error())
 			response.Headers = cloneResponseHeaders(httpErr.Headers)
 			return response
 		}
 		if outcome.ErrorKind == component.ProviderErrorClient {
-			return f.errorResponse(request, module, http.StatusBadRequest, "Bad request", err.Error())
+			return f.ErrorResponse(request, module, http.StatusBadRequest, "Bad request", err.Error())
 		}
-		return f.errorResponse(request, module, http.StatusInternalServerError, "Internal server error", err.Error())
+		return f.ErrorResponse(request, module, http.StatusInternalServerError, "Internal server error", err.Error())
 	}
 	if isNil(outcome.Value) {
 		return f.noDataResponse(request, module, outcome.NoData)
 	}
 	response, encodeErr := encodeResult(outcome, outcome.Value)
 	if encodeErr != nil {
-		return f.errorResponse(request, module, http.StatusInternalServerError, "Internal server error", encodeErr.Error())
+		return f.ErrorResponse(request, module, http.StatusInternalServerError, "Internal server error", encodeErr.Error())
 	}
 	return response
 }
@@ -163,10 +163,18 @@ func (f *FDSNWS) noDataResponse(request Request, module Module, status int) Resp
 	if status == http.StatusNoContent {
 		return Response{StatusCode: status, MIMEType: MIMEText}
 	}
-	return f.errorResponse(request, module, status, "No data", "The request was valid but matched no data")
+	return f.ErrorResponse(request, module, status, "No data", "The request was valid but matched no data")
 }
 
-func (f *FDSNWS) errorResponse(request Request, module Module, status int, summary, detail string) Response {
+// ErrorResponse builds an FDSN error response for use by middleware and adapters.
+// It uses the configured documentation URL and the module's service version.
+// Request.URL takes precedence over Request.Path and Request.RawQuery.
+// If Request.ReceivedAt is zero, the Provider's clock supplies the submission time.
+// Callers can set Response.Headers before writing with WriteHTTPResponse.
+func (f *FDSNWS) ErrorResponse(request Request, module Module, status int, summary, detail string) Response {
+	if request.ReceivedAt.IsZero() {
+		request.ReceivedAt = f.timeProvider.Now()
+	}
 	docNotes := "Usage details are not provided by administrator"
 	docLink := f.config.documentationURL
 	if docLink != "" {

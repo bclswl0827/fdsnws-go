@@ -396,6 +396,49 @@ func TestProviderTimeIsUsedForRequestsAndStationXML(t *testing.T) {
 	}
 }
 
+func TestErrorResponseForMiddleware(t *testing.T) {
+	fixed := time.Date(2030, 4, 5, 6, 7, 8, 9, time.FixedZone("test", 8*60*60))
+	server, err := NewFDSNWS(testProvider{currentTime: fixed},
+		WithModules(ModuleStation),
+		WithServiceVersion(ModuleStation, "1.1.9"),
+		WithDocumentationURL("https://example.org/fdsnws"),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, test := range []struct {
+		name       string
+		url        string
+		receivedAt time.Time
+		wantURL    string
+		wantTime   time.Time
+	}{
+		{"path and Provider clock", "", time.Time{}, "/fdsnws/station/1/query?network=IU%2A", fixed},
+		{"explicit URL and time", "https://example.org/fdsnws/station/1/query?network=XX", fixed.Add(-time.Minute), "https://example.org/fdsnws/station/1/query?network=XX", fixed.Add(-time.Minute)},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			response := server.ErrorResponse(Request{
+				Path: "/fdsnws/station/1/query", RawQuery: "network=IU%2A",
+				URL: test.url, ReceivedAt: test.receivedAt,
+			}, ModuleStation, http.StatusUnauthorized, "Unauthorized", "access key is required")
+			if response.StatusCode != http.StatusUnauthorized || response.MIMEType != MIMEText {
+				t.Fatalf("response = %#v", response)
+			}
+			for _, want := range []string{
+				"Error 401: Unauthorized\n\naccess key is required\n\n",
+				"Usage details are available from https://example.org/fdsnws\n\n",
+				"Request:\n" + test.wantURL + "\n\n",
+				"Request Submitted:\n" + test.wantTime.UTC().Format(time.RFC3339Nano) + "\n\n",
+				"Service version:\n1.1.9\n",
+			} {
+				if !strings.Contains(string(response.Body), want) {
+					t.Fatalf("missing %q in %s", want, response.Body)
+				}
+			}
+		})
+	}
+}
+
 func TestStationRejectsTextResponseLevel(t *testing.T) {
 	server, _ := NewFDSNWS(testProvider{}, WithModules(ModuleStation))
 	response := server.Handle(context.Background(), normalizedRequest(http.MethodGet, "/fdsnws/station/1/query", "level=response&format=text", ""))
